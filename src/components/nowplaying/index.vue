@@ -1,19 +1,19 @@
 <template>
     <div class="movie_body">
 				<ul>
-					<li>
-						<div class="pic_show"><img src="/images/movie_1.jpg"></div>
+					<li v-for="item in movieList" :key="item.filmId">
+						<div class="pic_show"><img :src="item.poster"></div>
 						<div class="info_list">
-							<h2>无名之辈</h2>
-							<p>观众评 <span class="grade">9.2</span></p>
-							<p>主演: 陈建斌,任素汐,潘斌龙</p>
-							<p>今天55家影院放映607场</p>
+							<h2>{{item.name}}</h2>
+							<p>观众评 <span class="grade">{{item.grade}}</span></p>
+							<p>主演: <span v-for="data in item.actors" :key="data.name"> {{data.name}} </span></p>
+							<p><span>{{item.nation}}  |  {{item.runtime}}分钟</span></p>
 						</div>
 						<div class="btn_mall">
 							购票
 						</div>
 					</li>
-					<li>
+					<!-- <li>
 						<div class="pic_show"><img src="/images/movie_2.jpg"></div>
 						<div class="info_list">
 							<h2>毒液：致命守护者</h2>
@@ -96,13 +96,30 @@
 						<div class="btn_mall">
 							购票
 						</div>
-					</li>
+					</li> -->
 				</ul>
 			</div>
 </template>
 <script>
 export default {
-    name:'nowplaying'
+	name:'nowplaying',
+	data(){
+		return{
+			movieList:[]
+		}
+	},
+	mounted () {
+		this.axios({
+			 url:"/api/gateway?cityId=310100&pageNum=1&pageSize=10&type=1",
+      		headers:{
+        'X-Client-Info': '{"a":"3000","ch":"1002","v":"5.0.4","e":"1595300880907406330560514","bc":"310100"}',
+        'X-Host': 'mall.film-ticket.film.list'
+      }
+		}).then(res=>{
+			console.log(res.data)
+			this.movieList=res.data.data.films
+		})
+	}
 }
 </script>
 
